@@ -195,7 +195,7 @@ int getsw(int x) {
 	return (sw >> (x-1)) & 0x1;
 }
 
-int main() {
+void setup() {
 	/* Set up peripheral bus clock */
 	OSCCON &= ~0x180000;
 	OSCCON |= 0x080000;
@@ -231,6 +231,10 @@ int main() {
 	SPI2CONSET = 0x8000;
 
 	display_init();
+}
+
+int main() {
+	setup();
 
 	/*current testing routine*/
 	int x, y, btns, sws;
