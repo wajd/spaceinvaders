@@ -232,9 +232,10 @@ int main() {
 
 	display_init();
 
+	/*current testing routine*/
 	int x, y, btns, sws;
 
-	x = 1;
+	x = 0;
 	y = 0;
 	for(;;) {
 		btns = getbtn(0);
