@@ -232,11 +232,13 @@ int main() {
 
 	display_init();
 
-	int x = 1;
-	int y = 0;
+	int x, y, btns, sws;
+
+	x = 1;
+	y = 0;
 	for(;;) {
-		int btns = getbtn(0);
-		int sws = getsw(6);
+		btns = getbtn(0);
+		sws = getsw(6);
 		if (sws)
 			toggle_pixel(0,15,true);
 		else
