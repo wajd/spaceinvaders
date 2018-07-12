@@ -17,12 +17,8 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-/*array that maps pixels on screen
- *each nbr 0-255 is an 8 bit nbr w/each bit repr a pxl on a vertical column
- *there are 64 rows of 8 nbrs each
- *each row represents a square block
- *every 16 rows represent a row of squares/"a line"
- *there are 4 lines*/
+#define DELAY 1000
+
 uint8_t map[] = {
 	255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255,
@@ -166,7 +162,7 @@ void toggle_pixel(int x, int y, bool on) {
 
 	/*TODO: make an interrupt that updates the screen when change happens in map*/
 	display_update(map);
-	delay(1000000);
+	delay(DELAY);
 }
 
 bool is_pixel_on(int x, int y) {
@@ -239,14 +235,14 @@ int main() {
 	int x = 1;
 	int y = 0;
 	for(;;) {
-		int btn3 = getbtn(3);
-		int sw3 = getsw(3);
-		if (sw3)
-			toggle_pixel(0,0,true);
+		int btns = getbtn(0);
+		int sws = getsw(6);
+		if (sws)
+			toggle_pixel(0,15,true);
 		else
-			toggle_pixel(0,0,false);
+			toggle_pixel(0,15,false);
 
-		if (btn3){
+		if (btns){
 			if (is_pixel_on(x,y))
 				toggle_pixel(x++, y, false);
 			else
