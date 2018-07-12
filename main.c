@@ -182,8 +182,21 @@ bool is_pixel_on(int x, int y) {
 }
 
 int getbtn(int x) {
-		volatile int buttons = ((PORTD >> 4) & 0xe) | ((PORTF >> 1) & 0x1);
-		return (buttons >> x) & 0x1;
+	volatile int buttons = ((PORTD >> 4) & 0xe) | ((PORTF >> 1) & 0x1);
+
+	if (!x || x > 4)
+		return buttons;
+
+	return (buttons >> (x-1)) & 0x1;
+}
+
+int getsw(int x) {
+	volatile int sw = ((PORTD >> 8) & 0xf);
+
+	if (!x || x>4)
+		return sw;
+
+	return (sw >> (x-1)) & 0x1;
 }
 
 int main() {
@@ -226,13 +239,14 @@ int main() {
 	int x = 1;
 	int y = 0;
 	for(;;) {
-		int btn1 = getbtn(0);
-		// if (PORTD & (1<<8))
-		// 	toggle_pixel(0,0,true);
-		// else
-		// 	toggle_pixel(0,0,false);
-		//
-		if (btn1){
+		int btn3 = getbtn(3);
+		int sw3 = getsw(3);
+		if (sw3)
+			toggle_pixel(0,0,true);
+		else
+			toggle_pixel(0,0,false);
+
+		if (btn3){
 			if (is_pixel_on(x,y))
 				toggle_pixel(x++, y, false);
 			else
