@@ -1,5 +1,7 @@
 #include <pic32mx.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
 
 #define DISPLAY_VDD PORTFbits.RF6
 #define DISPLAY_VBATT PORTFbits.RF5
@@ -148,23 +150,52 @@ void display_update(uint8_t *data) {
 	 }
 }
 
-void toggle_pixel(int x, int y, int on) {
+void toggle_pixel(int x, int y, bool on) {
 	int z = 0;
-	if (y>7) {
+	if (y>7)
 		z = (y-(y%8))/8;
-		y = y % 8;
-	}
+
+	x = x % 128;
+	y = y % 8;
+	z = z % 4;
 
 	if(on)
 		map[x+z*128] &= ~(0x1 << y);
 	else
 		map[x+z*128] |= (0x1 << y);
 
+	/*TODO: make an interrupt that updates the screen when change happens in map*/
 	display_update(map);
-	delay(1000);
+	delay(1000000);
+}
+
+bool is_pixel_on(int x, int y) {
+	int z = 0;
+	if (y>7)
+		z = (y-(y%8))/8;
+
+	x = x % 128;
+	y = y % 8;
+	z = z % 4;
+
+	return !(map[x+z*128] & (0x1 << y));
+}
+
+int getbtn(int x) {
+		volatile int buttons = ((PORTD >> 4) & 0xe) | ((PORTF >> 1) & 0x1);
+		return (buttons >> x) & 0x1;
 }
 
 int main() {
+	/* Set up peripheral bus clock */
+	OSCCON &= ~0x180000;
+	OSCCON |= 0x080000;
+
+	/* Set up output pins */
+	AD1PCFG = 0xFFFF;
+	ODCE = 0x0;
+	TRISECLR = 0xFF;
+	PORTE = 0x0;
 
 	/* Output pins for display signals */
 	PORTF = 0xFFFF;
@@ -173,6 +204,10 @@ int main() {
 	ODCG = 0x0;
 	TRISFCLR = 0x70;
 	TRISGCLR = 0x200;
+
+	/* Set up input pins */
+	TRISDSET = (1 << 8);
+	TRISFSET = (1 << 1);
 
 	/* Set up SPI as master */
 	SPI2CON = 0;
@@ -188,14 +223,22 @@ int main() {
 
 	display_init();
 
-	int i, j;
- 	for (i=0;i<32;i++) {
-			for (j=0;j<128;j++){
-			toggle_pixel(j, i, 1);
+	int x = 1;
+	int y = 0;
+	for(;;) {
+		int btn1 = getbtn(0);
+		// if (PORTD & (1<<8))
+		// 	toggle_pixel(0,0,true);
+		// else
+		// 	toggle_pixel(0,0,false);
+		//
+		if (btn1){
+			if (is_pixel_on(x,y))
+				toggle_pixel(x++, y, false);
+			else
+				toggle_pixel(x++, y, true);
 		}
 	}
 
-
-	for(;;) ;
 	return 0;
 }
