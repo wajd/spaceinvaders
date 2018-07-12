@@ -17,7 +17,7 @@
 #define DISPLAY_RESET_PORT PORTG
 #define DISPLAY_RESET_MASK 0x200
 
-#define DELAY 1000
+#define DELAY 100000
 
 uint8_t map[] = {
 	255, 255, 255, 255, 255, 255, 255, 255,
@@ -144,29 +144,36 @@ void display_update(uint8_t *data) {
 		for(j = 0; j < 128; j++)
 			spi_send_recv(~data[i*128 + j]);
 	 }
+
+	 delay(DELAY);
 }
 
-void toggle_pixel(int x, int y, bool on) {
-	int z = 0;
-	if (y>7)
-		z = (y-(y%8))/8;
+void toggle_pixel(int *x, int *y, bool on) {
 
-	x = x % 128;
-	y = y % 8;
-	z = z % 4;
+	if (*x<0)
+		*x = 127;
+
+	if (*y<0)
+		*y=31;
+
+	*x = *x % 128;
+	*y = *y % 32;
 
 	if(on)
-		map[x+z*128] &= ~(0x1 << y);
+		map[*x + 128 * ((*y - (*y % 8))/8)] &= ~(0x1 << (*y%8));
 	else
-		map[x+z*128] |= (0x1 << y);
-
-	/*TODO: make an interrupt that updates the screen when change happens in map*/
-	display_update(map);
-	delay(DELAY);
+		map[*x + 128 * ((*y - (*y % 8))/8)] |= (0x1 << (*y%8));
 }
 
 bool is_pixel_on(int x, int y) {
 	int z = 0;
+
+	if (x<0)
+		x = 127;
+
+	if (y<0)
+		y=15;
+
 	if (y>7)
 		z = (y-(y%8))/8;
 
@@ -231,29 +238,48 @@ void setup() {
 	SPI2CONSET = 0x8000;
 
 	display_init();
+	display_update(map);
 }
 
 int main() {
 	setup();
 
 	/*current testing routine*/
-	int x, y, btns, sws;
+	int x, y, px, py;
 
-	x = 0;
-	y = 0;
+	bool pressed = false;
+	px = 60;
+	py = 16;
+	x = 60;
+	y = 16;
 	for(;;) {
-		btns = getbtn(0);
-		sws = getsw(6);
-		if (sws)
-			toggle_pixel(0,15,true);
-		else
-			toggle_pixel(0,15,false);
 
-		if (btns){
-			if (is_pixel_on(x,y))
-				toggle_pixel(x++, y, false);
-			else
-				toggle_pixel(x++, y, true);
+		if (getbtn(1)) {
+			x++;
+			pressed = true;
+		}
+		else if (getbtn(4)) {
+			x--;
+			pressed = true;
+		}
+
+		if (getbtn(2)) {
+		  y++;
+			pressed = true;
+		}
+		else if (getbtn(3)) {
+			y--;
+			pressed = true;
+		}
+
+		if (pressed) {
+			toggle_pixel(&px, &py, false);
+			toggle_pixel(&x, &y, true);
+			px = x;
+			py = y;
+
+			display_update(map);
+			pressed = false;
 		}
 	}
 
