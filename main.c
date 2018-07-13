@@ -19,17 +19,6 @@
 
 #define DELAY 100000
 
-struct body {
-	int x;
-	int y;
-	int height;
-	int width;
-}
-
-struct entity {
-	body box;
-}
-
 uint8_t map[] = {
 	255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255,
