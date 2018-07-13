@@ -19,6 +19,17 @@
 
 #define DELAY 100000
 
+struct body {
+	int x;
+	int y;
+	int height;
+	int width;
+}
+
+struct entity {
+	body box;
+}
+
 uint8_t map[] = {
 	255, 255, 255, 255, 255, 255, 255, 255,
 	255, 255, 255, 255, 255, 255, 255, 255,
@@ -160,28 +171,22 @@ void toggle_pixel(int *x, int *y, bool on) {
 	*y = *y % 32;
 
 	if(on)
-		map[*x + 128 * ((*y - (*y % 8))/8)] &= ~(0x1 << (*y%8));
+		map[*x + 128 * ((*y - (*y % 8))/8)] &= ~(0x1 << (*y % 8));
 	else
-		map[*x + 128 * ((*y - (*y % 8))/8)] |= (0x1 << (*y%8));
+		map[*x + 128 * ((*y - (*y % 8))/8)] |= (0x1 << (*y % 8));
 }
 
 bool is_pixel_on(int x, int y) {
-	int z = 0;
-
 	if (x<0)
 		x = 127;
 
 	if (y<0)
-		y=15;
-
-	if (y>7)
-		z = (y-(y%8))/8;
+		y=31;
 
 	x = x % 128;
-	y = y % 8;
-	z = z % 4;
+	y = y % 32;
 
-	return !(map[x+z*128] & (0x1 << y));
+	return !(map[x + 128 * ((y - (y % 8))/8)] & ~(0x1 << (y % 8)) );
 }
 
 int getbtn(int x) {
@@ -248,6 +253,7 @@ int main() {
 	int x, y, px, py;
 
 	bool pressed = false;
+
 	px = 60;
 	py = 16;
 	x = 60;
