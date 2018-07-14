@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include "header.h"
 
-#define DELAY 100000
-
 void setup() {
 	/* Set up peripheral bus clock */
 	OSCCON &= ~0x180000;
