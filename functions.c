@@ -5,6 +5,8 @@ void delay(int cyc) {
 	for(i = cyc; i > 0; i--);
 }
 
+/*input*/
+
 int getbtn(int x) {
 	volatile int buttons = ((PORTD >> 4) & 0xe) | ((PORTF >> 1) & 0x1);
 
