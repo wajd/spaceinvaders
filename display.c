@@ -55,7 +55,7 @@ void display_init() {
 	spi_send_recv(0xAF);
 }
 
-void display_update(uint8_t *data) {
+void display_update() {
 	 int i, j;
 
 	 for(i = 0; i < 4; i++) {
@@ -69,7 +69,7 @@ void display_update(uint8_t *data) {
 		DISPLAY_COMMAND_DATA_PORT |= DISPLAY_COMMAND_DATA_MASK;
 
 		for(j = 0; j < 128; j++)
-			spi_send_recv(~data[i*128 + j]);
+			spi_send_recv(~map[i*128 + j]);
 	 }
 
 	 delay(DELAY);
