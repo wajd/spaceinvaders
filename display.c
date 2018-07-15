@@ -1,8 +1,9 @@
 #include "header.h"
 
-/*switch specific pixel on/off*/
-void toggle_pixel(int *x, int *y, int on) {
+/*pixel manipulation*/
 
+/*keeps pixel 0=<x<128, 0=<y<32*/
+void fix_pixel(int *x, int *y) {
 	if (*x<0)
 		*x = 127;
 
@@ -11,6 +12,12 @@ void toggle_pixel(int *x, int *y, int on) {
 
 	*x = *x % 128;
 	*y = *y % 32;
+}
+
+/*switch specific pixel on/off*/
+void toggle_pixel(int *x, int *y, int on) {
+
+	fix_pixel(x, y);
 
 	if(on)
 		pixels[*x + 128 * ((*y - (*y % 8))/8)] |= (0x1 << (*y % 8));
@@ -20,17 +27,14 @@ void toggle_pixel(int *x, int *y, int on) {
 
 /*ckeck specific pixel is on/off*/
 int is_pixel_on(int x, int y) {
-	if (x<0)
-		x = 127;
 
-	if (y<0)
-		y=31;
-
-	x = x % 128;
-	y = y % 32;
+	fix_pixel(&x, &y);
 
 	return (pixels[x + 128 * ((y - (y % 8))/8)] & ~(0x1 << (y % 8)));
 }
+
+/*pixel array*/
+uint8_t pixels[512];
 
 /*functions to communication with screen hardware*/
 
@@ -90,6 +94,3 @@ void display_update() {
 
 	 delay(DELAY);
 }
-
-/*pixel array*/
-uint8_t pixels[512];
