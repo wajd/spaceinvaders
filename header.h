@@ -62,3 +62,5 @@ int getsw(int x);
 struct entity make_entity (int x, int y, int height, int width, int enemy);
 void toggle_entity (struct entity *ent, int on);
 void move_entity (struct entity *ent, int dir);
+struct bullet shoot(struct entity *ent);
+void move_bullet(struct bullet *bul);

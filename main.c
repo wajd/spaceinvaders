@@ -3,35 +3,6 @@
 struct entity;
 struct bullet;
 
-struct bullet shoot(struct entity *ent) {
-	struct bullet temp;
-	temp.dir = (*ent).enemy;
-	if (temp.dir) {
-		temp.x = (*ent).x - (*ent).height - 1;
-	} else {
-		temp.x = (*ent).x + (*ent).height + 1;
-	}
-	temp.y = (*ent).y;
-	temp.on = 1;
-
-	toggle_pixel(&temp.x, &temp.y, temp.on);
-	return temp;
-}
-
-void move_bullet(struct bullet *bul) {
-	toggle_pixel(&(*bul).x, &(*bul).y, 0);
-	if ((*bul).dir) {
-		(*bul).x--;
-	} else {
-		(*bul).x++;
-	}
-
-	if ((*bul).x <= 0 || (*bul).x >= 127)
-		(*bul).on = 0;
-	else
-		toggle_pixel(&(*bul).x, &(*bul).y, (*bul).on);
-}
-
 void test() {
 
 	struct entity spaceship = make_entity(15, 16, 3, 2, 0);
@@ -41,6 +12,9 @@ void test() {
 
 	int disp = 0;
 	int shooting = 0;
+
+	//int i, j, x, y;
+
 	// int x, y, px, py;
 	//
 	// int pressed = 0;
@@ -49,9 +23,9 @@ void test() {
 	// py = 16;
 	// x = 60;
 	// y = 16;
-	//int i, j, x, y;
 
 	for(;;) {
+
 		if (getbtn(1)) {
 			move_entity(&spaceship, Forward);
 			disp = 1;
@@ -69,11 +43,6 @@ void test() {
 			disp = 1;
 		}
 
-		if(getsw(1) && !shooting) {
-			bul = shoot(&spaceship);
-			shooting = 1;
-		}
-
 		if(shooting && bul.on) {
 			move_bullet(&bul);
 			disp = 1;
@@ -81,10 +50,16 @@ void test() {
 			shooting = 0;
 		}
 
+		if(getsw(1) && !shooting) {
+			bul = shoot(&spaceship);
+			shooting = 1;
+		}
+
 		if (disp) {
 			display_update();
 			disp = 0;
 		}
+
 		// if (getbtn(1)) {
 		// 	for (j = spaceship.y - spaceship.width; j <= spaceship.y + spaceship.width; j++) {
 		// 		for (i = spaceship.x - spaceship.height; i <= spaceship.x + spaceship.height; i++) {
@@ -95,6 +70,7 @@ void test() {
 		// 	}
 		// 	display_update();
 		// }
+
 		// if (getbtn(1)) {
 		// 	x++;
 		// 	pressed = 1;

@@ -3,6 +3,8 @@
 struct entity;
 struct bullet;
 
+/*entity functions*/
+
 struct entity make_entity (int x, int y, int height, int width, int enemy) {
 	struct entity temp;
 	temp.x = x;
@@ -36,18 +38,53 @@ void move_entity (struct entity *ent, int dir) {
 
 	switch(dir) {
 		case Forward :
-			(*ent).x++;
+      if((*ent).height + (*ent).x + 1 < 128)
+			   (*ent).x++;
 			break;
 		case Right :
-			(*ent).y++;
+      if((*ent).width + (*ent).y + 1 < 32)
+			   (*ent).y++;
 			break;
 		case Backwards :
-			(*ent).x--;
+      if(-(*ent).height + (*ent).x - 1 >= 0)
+			   (*ent).x--;
 			break;
 		case Left :
-			(*ent).y--;
+      if(-(*ent).width + (*ent).y - 1 >= 0)
+        (*ent).y--;
 			break;
 	}
 
 	toggle_entity(ent, 1);
+}
+
+/*bullet functions*/
+
+struct bullet shoot(struct entity *ent) {
+	struct bullet temp;
+	temp.dir = (*ent).enemy;
+	if (temp.dir) {
+		temp.x = (*ent).x - (*ent).height - 1;
+	} else {
+		temp.x = (*ent).x + (*ent).height + 1;
+	}
+	temp.y = (*ent).y;
+	temp.on = 1;
+
+	toggle_pixel(&temp.x, &temp.y, temp.on);
+	return temp;
+}
+
+void move_bullet(struct bullet *bul) {
+	toggle_pixel(&(*bul).x, &(*bul).y, 0);
+	if ((*bul).dir) {
+		(*bul).x--;
+	} else {
+		(*bul).x++;
+	}
+
+	if ((*bul).x < 2 || (*bul).x > 126)
+		(*bul).on = 0;
+	else
+		toggle_pixel(&(*bul).x, &(*bul).y, (*bul).on);
 }
