@@ -1,4 +1,5 @@
 #include "header.h"
+enum Direction {Forward, Right, Backwards, Left};
 
 struct entity {
 	int x;
@@ -29,28 +30,50 @@ struct entity make_entity (int x, int y, int height, int width) {
 	return temp;
 }
 
-void toggle_entity (struct entity *ent) {
+void toggle_entity (struct entity *ent, int on) {
 	int i, j, x, y;
-	x = (*ent).x - (*ent).width;
-	y = (*ent).y - (*ent).height;
+	x = (*ent).x - (*ent).height;
+	y = (*ent).y - (*ent).width;
 
 	if (x >= 0 && (x + 2*(*ent).height) < 128 && y >= 0 && (y + 2*(*ent).width) < 32) {
 		for (j = (*ent).y - (*ent).width; j <= (*ent).y + (*ent).width; j++) {
 			for (i = (*ent).x - (*ent).height; i <= (*ent).x + (*ent).height; i++) {
 				x = i;
 				y = j;
-				toggle_pixel(&x, &y, (*ent).on);
+				toggle_pixel(&x, &y, on);
 			}
 		}
 	}
 }
 
-//void move_entity (struct entity ent) {}
+void move_entity (struct entity *ent, int dir) {
+	toggle_entity(ent, 0);
+
+	switch(dir) {
+		case Forward :
+			(*ent).x++;
+			break;
+		case Right :
+			(*ent).y++;
+			break;
+		case Backwards :
+			(*ent).x--;
+			break;
+		case Left :
+			(*ent).y--;
+			break;
+	}
+
+	toggle_entity(ent, 1);
+}
 
 void test() {
 
 	struct entity spaceship = make_entity(15, 16, 3, 2);
+	toggle_entity(&spaceship, 1);
+	display_update();
 
+	int disp = 0;
 	// int x, y, px, py;
 	//
 	// int pressed = 0;
@@ -62,9 +85,26 @@ void test() {
 	//int i, j, x, y;
 
 	for(;;) {
+		if (getbtn(1)) {
+			move_entity(&spaceship, Forward);
+			disp = 1;
+		}
+		if (getbtn(2)) {
+			move_entity(&spaceship, Left);
+			disp = 1;
+		}
+		if (getbtn(3)) {
+			move_entity(&spaceship, Right);
+			disp = 1;
+		}
 		if (getbtn(4)) {
-			toggle_entity(&spaceship);
+			move_entity(&spaceship, Backwards);
+			disp = 1;
+		}
+
+		if (disp) {
 			display_update();
+			disp = 0;
 		}
 		// if (getbtn(1)) {
 		// 	for (j = spaceship.y - spaceship.width; j <= spaceship.y + spaceship.width; j++) {
