@@ -83,7 +83,7 @@ void move_bullet(struct bullet *bul) {
 		(*bul).x++;
 	}
 
-	if ((*bul).x < 2 || (*bul).x > 126)
+	if ((*bul).x < 2 || (*bul).x > 126 || is_pixel_on((*bul).x, (*bul).y))
 		(*bul).on = 0;
 	else
 		toggle_pixel(&(*bul).x, &(*bul).y, (*bul).on);

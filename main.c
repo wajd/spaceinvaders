@@ -5,13 +5,17 @@ struct bullet;
 
 void test() {
 
-	struct entity spaceship = make_entity(15, 16, 3, 2, 0);
-	struct bullet bul;
+	struct entity spaceship = make_entity(15, 15, 2, 1, 0);
+	struct entity enemy1 = make_entity(100, 10, 1, 1, 1);
+	struct bullet ssbul, e1bul;
+
 	toggle_entity(&spaceship, 1);
+	toggle_entity(&enemy1, 1);
 	display_update();
 
 	int disp = 0;
-	int shooting = 0;
+	int ssbtrav = 0;
+	int e1btrav = 0;
 
 	//int i, j, x, y;
 
@@ -43,16 +47,28 @@ void test() {
 			disp = 1;
 		}
 
-		if(shooting && bul.on) {
-			move_bullet(&bul);
+		if(ssbtrav && ssbul.on) {
+			move_bullet(&ssbul);
 			disp = 1;
 		} else {
-			shooting = 0;
+			ssbtrav = 0;
 		}
 
-		if(getsw(1) && !shooting) {
-			bul = shoot(&spaceship);
-			shooting = 1;
+		if(e1btrav && e1bul.on) {
+			move_bullet(&e1bul);
+			disp = 1;
+		} else {
+			e1btrav = 0;
+		}
+
+		if(getsw(1) && !ssbtrav) {
+			ssbul = shoot(&spaceship);
+			ssbtrav = 1;
+		}
+
+		if(getsw(2) && !e1btrav) {
+			e1bul = shoot(&enemy1);
+			e1btrav = 1;
 		}
 
 		if (disp) {
