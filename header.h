@@ -25,17 +25,17 @@
 enum Direction {Forward, Right, Backwards, Left};
 
 struct entity {
-	int x;
-	int y;
+	uint8_t x;
+	uint8_t y;
 	int on;
-	int height;
-	int width;
+	uint8_t height;
+	uint8_t width;
   int enemy;
 };
 
 struct bullet {
-	int x;
-	int y;
+	uint8_t x;
+	uint8_t y;
 	int on;
 	int dir;
 };
@@ -51,15 +51,15 @@ void display_update();
 void setup();
 
 /*Declare graphic functions*/
-void toggle_pixel(int *x, int *y, int on);
-int is_pixel_on(int x, int y);
+void toggle_pixel(uint8_t x, uint8_t y, int on);
+int is_pixel_on(uint8_t x, uint8_t y);
 
 /*Declare input functions*/
 int getbtn(int x);
 int getsw(int x);
 
 /*Declare game control functions*/
-struct entity make_entity (int x, int y, int height, int width, int enemy);
+struct entity make_entity (uint8_t x, uint8_t y, uint8_t height, uint8_t width, int enemy);
 void toggle_entity (struct entity *ent, int on);
 void move_entity (struct entity *ent, int dir);
 struct bullet shoot(struct entity *ent);

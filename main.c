@@ -1,12 +1,12 @@
 #include "header.h"
 
-struct entity;
-struct bullet;
+// struct entity;
+// struct bullet;
 
 void test() {
 
 	struct entity spaceship = make_entity(15, 15, 2, 1, 0);
-	struct entity enemy1 = make_entity(100, 10, 1, 1, 1);
+	struct entity enemy1 = make_entity(100, 13, 1, 1, 1);
 	struct bullet ssbul, e1bul;
 
 	toggle_entity(&spaceship, 1);
@@ -19,7 +19,7 @@ void test() {
 
 	//int i, j, x, y;
 
-	// int x, y, px, py;
+	// uint8_t x, y, px, py;
 	//
 	// int pressed = 0;
 	//
