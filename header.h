@@ -19,6 +19,22 @@
 
 /*CONSTANTS*/
 #define DELAY 100000
+enum Direction {Forward, Right, Backwards, Left};
+
+struct entity {
+	int x;
+	int y;
+	int on;
+	int height;
+	int width;
+};
+
+struct bullet {
+	int x;
+	int y;
+	int on;
+	int dir;
+};
 
 /*VARIABLES*/
 uint8_t pixels[512];
@@ -39,3 +55,6 @@ int getbtn(int x);
 int getsw(int x);
 
 /*Declare game control functions*/
+struct entity make_entity (int x, int y, int height, int width);
+void toggle_entity (struct entity *ent, int on);
+void move_entity (struct entity *ent, int dir);
