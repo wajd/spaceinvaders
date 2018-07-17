@@ -29,21 +29,23 @@ struct entity make_entity (int x, int y, int height, int width) {
 	return temp;
 }
 
-void toggle_entity (struct entity ent) {
+void toggle_entity (struct entity *ent) {
 	int i, j, x, y;
-	x = ent.x - ent.width;
-	y = ent.y - ent.height;
+	x = (*ent).x - (*ent).width;
+	y = (*ent).y - (*ent).height;
 
-	if (x >= 0 && (x + 2*ent.height) < 128 && y >= 0 && (y + 2*ent.width) < 32) {
-		for (j = ent.y - ent.width; j <= ent.y + ent.width; j++) {
-			for (i = ent.x - ent.height; i <= ent.x + ent.height; i++) {
+	if (x >= 0 && (x + 2*(*ent).height) < 128 && y >= 0 && (y + 2*(*ent).width) < 32) {
+		for (j = (*ent).y - (*ent).width; j <= (*ent).y + (*ent).width; j++) {
+			for (i = (*ent).x - (*ent).height; i <= (*ent).x + (*ent).height; i++) {
 				x = i;
 				y = j;
-				toggle_pixel(&x, &y, ent.on);
+				toggle_pixel(&x, &y, (*ent).on);
 			}
 		}
 	}
 }
+
+//void move_entity (struct entity ent) {}
 
 void test() {
 
@@ -61,7 +63,7 @@ void test() {
 
 	for(;;) {
 		if (getbtn(4)) {
-			toggle_entity(spaceship);
+			toggle_entity(&spaceship);
 			display_update();
 		}
 		// if (getbtn(1)) {
