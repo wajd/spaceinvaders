@@ -19,6 +19,9 @@
 
 /*CONSTANTS*/
 #define DELAY 100000
+#define ENE_CNT 6
+#define BUL_LIM 3
+
 enum Direction {Forward, Right, Backwards, Left};
 
 struct entity {
@@ -27,6 +30,7 @@ struct entity {
 	int on;
 	int height;
 	int width;
+  int enemy;
 };
 
 struct bullet {
@@ -55,6 +59,6 @@ int getbtn(int x);
 int getsw(int x);
 
 /*Declare game control functions*/
-struct entity make_entity (int x, int y, int height, int width);
+struct entity make_entity (int x, int y, int height, int width, int enemy);
 void toggle_entity (struct entity *ent, int on);
 void move_entity (struct entity *ent, int dir);

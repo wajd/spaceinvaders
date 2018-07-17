@@ -3,13 +3,14 @@
 struct entity;
 struct bullet;
 
-struct entity make_entity (int x, int y, int height, int width) {
+struct entity make_entity (int x, int y, int height, int width, int enemy) {
 	struct entity temp;
 	temp.x = x;
 	temp.y = y;
 	temp.height = height;
 	temp.width = width;
 	temp.on = 1;
+  temp.enemy = enemy;
 	//TODO: add checks for validity
 	return temp;
 }
