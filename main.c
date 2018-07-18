@@ -1,21 +1,22 @@
 #include "header.h"
 
-// struct entity;
-// struct bullet;
-
 void test() {
 
-	struct entity spaceship = make_entity(15, 15, 2, 1, 0);
-	struct entity enemy1 = make_entity(100, 13, 1, 1, 1);
-	struct bullet ssbul, e1bul;
-
+	spaceship = make_entity(10, 15, 2, 1, 0);
 	toggle_entity(&spaceship, 1);
-	toggle_entity(&enemy1, 1);
+	struct bullet ssbul;
+	int ssbtrav = 0;
+
+	int i;
+	for (i= 0; i< ENE_CNT; i++) {
+		enemies[i] = make_entity(100, (3 + i * 5), 1, 1, 1);
+		toggle_entity(&enemies[i], 1);
+		bultrav[i] = 0;
+	}
+
 	display_update();
 
 	int disp = 0;
-	int ssbtrav = 0;
-	int e1btrav = 0;
 
 	//int i, j, x, y;
 
@@ -49,16 +50,10 @@ void test() {
 
 		if(ssbtrav && ssbul.on) {
 			move_bullet(&ssbul);
+			bullet_kill(&ssbul);
 			disp = 1;
 		} else {
 			ssbtrav = 0;
-		}
-
-		if(e1btrav && e1bul.on) {
-			move_bullet(&e1bul);
-			disp = 1;
-		} else {
-			e1btrav = 0;
 		}
 
 		if(getsw(1) && !ssbtrav) {
@@ -66,9 +61,19 @@ void test() {
 			ssbtrav = 1;
 		}
 
-		if(getsw(2) && !e1btrav) {
-			e1bul = shoot(&enemy1);
-			e1btrav = 1;
+		for (i=0; i<ENE_CNT; i++) {
+			if(bultrav[i] && enebuls[i].on) {
+				move_bullet(&enebuls[i]);
+				bullet_kill(&enebuls[i]);
+				disp = 1;
+			} else {
+				bultrav[i] = 0;
+			}
+
+			if(getsw(2) && !bultrav[i]) {
+				enebuls[i] = shoot(&enemies[i]);
+				bultrav[i] = 1;
+			}
 		}
 
 		if (disp) {
