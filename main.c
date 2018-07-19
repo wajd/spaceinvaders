@@ -1,21 +1,17 @@
 #include "header.h"
 
 void test() {
+	int i;
 
 	spaceship = make_entity(10, 15, 2, 1, 0);
 	toggle_entity(&spaceship, 1);
-	struct bullet ssbul;
-	int ssbtrav = 0;
 
-	int i;
 	for (i= 0; i< ENE_CNT; i++) {
 		enemies[i] = make_entity(100, (3 + i * 5), 1, 1, 1);
 		toggle_entity(&enemies[i], 1);
-		bultrav[i] = 0;
 	}
 
 	display_update();
-
 	int disp = 0;
 
 	//int i, j, x, y;
@@ -48,32 +44,25 @@ void test() {
 			disp = 1;
 		}
 
-		if(ssbtrav && ssbul.on) {
+		if(ssbul.on) {
 			move_bullet(&ssbul);
 			bullet_kill(&ssbul);
 			disp = 1;
-		} else {
-			ssbtrav = 0;
 		}
 
-		if(getsw(1) && !ssbtrav) {
+		if(getsw(1) && !ssbul.on)
 			ssbul = shoot(&spaceship);
-			ssbtrav = 1;
-		}
+
 
 		for (i=0; i<ENE_CNT; i++) {
-			if(bultrav[i] && enebuls[i].on) {
+			if(enebuls[i].on) {
 				move_bullet(&enebuls[i]);
 				bullet_kill(&enebuls[i]);
 				disp = 1;
-			} else {
-				bultrav[i] = 0;
 			}
 
-			if(getsw(2) && !bultrav[i]) {
+			if(getsw(2) && !enebuls[i].on)
 				enebuls[i] = shoot(&enemies[i]);
-				bultrav[i] = 1;
-			}
 		}
 
 		if (disp) {

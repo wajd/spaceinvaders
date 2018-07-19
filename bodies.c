@@ -60,7 +60,7 @@ struct bullet shoot(struct entity *ent) {
 	struct bullet temp;
 	temp.on = 0;
 	temp.dir = (*ent).enemy;
-	temp.killed = 0;
+	temp.kill = 0;
   temp.y = (*ent).y;
 
 	if (!(*ent).on)
@@ -92,7 +92,7 @@ void move_bullet(struct bullet *bul) {
 
 		if(is_pixel_on((*bul).x, (*bul).y)) {
 			(*bul).on = 0;
-			(*bul).killed = 1;
+			(*bul).kill = 1;
 			return;
 		}
 
@@ -106,7 +106,7 @@ void move_bullet(struct bullet *bul) {
 
 void bullet_kill(struct bullet *bul) {
 	int i;
-	if ((*bul).killed) {
+	if ((*bul).kill) {
 		if((*bul).dir) {
 			if ((*bul).y >= spaceship.y - spaceship.width && (*bul).y <= spaceship.y + spaceship.width)
 				if ((*bul).x >= spaceship.x - spaceship.height && (*bul).x <= spaceship.x + spaceship.height)

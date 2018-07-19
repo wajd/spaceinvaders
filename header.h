@@ -38,15 +38,15 @@ struct bullet {
 	uint8_t y;
 	int on;
 	int dir;
-	int killed;
+	int kill;
 };
 
 /*VARIABLES*/
 uint8_t pixels[512];
 struct entity spaceship;
+struct bullet ssbul;
 struct entity enemies[ENE_CNT];
 struct bullet enebuls[ENE_CNT];
-int bultrav[ENE_CNT];
 
 /*Declare base & setup functions*/
 void delay(int cyc);
