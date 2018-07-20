@@ -1,45 +1,35 @@
 #include "header.h"
 
-void test() {
-	int i, j;
+int i;
 
-	entities[ENE_CNT] = make_entity(10, 3, 2, 1, ENE_CNT);
+void game_setup() {
+
+	lives = 4;
+	play = 1;
+
+	entities[ENE_CNT] = make_entity(8, 15, 3, 2, ENE_CNT);
 	toggle_entity(&entities[ENE_CNT], 1);
 
 	for (i= 0; i< ENE_CNT/3; i++) {
-		entities[i] = make_entity(100, (2 + i * 5), 1, 1, i);
+		entities[i] = make_entity(100, (2 + i * 5), 2, 2, i);
 		toggle_entity(&entities[i], 1);
-		entities[i+6] = make_entity(110, (2 + i * 5), 1, 1, i+6);
+		entities[i+6] = make_entity(110, (2 + i * 5), 2, 2, i+6);
 		toggle_entity(&entities[i+6], 1);
-		entities[i+12] = make_entity(120, (2 + i * 5), 1, 1, i+12);
+		entities[i+12] = make_entity(120, (2 + i * 5), 2, 2, i+12);
 		toggle_entity(&entities[i+12], 1);
 	}
-
 	for (i=0; i<ENE_CNT;i++) {
 		bullets[i] = make_bullet(0,0,0,i);
 	}
-
-	for (i=0; i<BUL_LIM;i++) {
-		herbuls[i] = make_bullet(0,0,1,i);
-	}
-
+	bullets[ENE_CNT] = make_bullet(0,0,1,ENE_CNT);
 	build_barriers();
 
 	display_update();
-	int disp = 0;
+}
 
-	//int i, j, x, y;
+void game() {
 
-	// uint8_t x, y, px, py;
-	//
-	// int pressed = 0;
-	//
-	// px = 60;
-	// py = 16;
-	// x = 60;
-	// y = 16;
-
-	for(;;) {
+	while(play) {
 
 		if (getbtn(1)) {
 			move_entity(&entities[ENE_CNT], Forward);
@@ -65,64 +55,31 @@ void test() {
 			move_bullet(&bullets[i]);
 		}
 
-		if (getsw(2+i)) {
+		if (getsw(2)) {
 			shoot(&entities[ENE_CNT]);
 		}
+		move_bullet(&bullets[ENE_CNT]);
 
-		for (i=0;i<BUL_LIM; i++) {
-			move_bullet(&herbuls[i]);
+		if(lives && entities[ENE_CNT].alive) {
+			toggle_entity(&entities[ENE_CNT], 1);
+		} else {
+			play = 0;
 		}
 
-		if (disp) {
-			display_update();
+		for(i=0;i<ENE_CNT;i++) {
+			if (entities[i].alive) {
+				toggle_entity(&entities[i], 1);
+			}
 		}
 
-		// if (getbtn(1)) {
-		// 	for (j = spaceship.y - spaceship.width; j <= spaceship.y + spaceship.width; j++) {
-		// 		for (i = spaceship.x - spaceship.height; i <= spaceship.x + spaceship.height; i++) {
-		// 			// x = i;
-		// 			// y = j;
-		// 			toggle_pixel(&i, &j, spaceship.on);
-		// 		}
-		// 	}
-		// 	display_update();
-		// }
-
-		// if (getbtn(1)) {
-		// 	x++;
-		// 	pressed = 1;
-		// }
-		// else if (getbtn(4)) {
-		// 	x--;
-		// 	pressed = 1;
-		// }
-		//
-		// if (getbtn(2)) {
-		// 	y++;
-		// 	pressed = 1;
-		// }
-		// else if (getbtn(3)) {
-		// 	y--;
-		// 	pressed = 1;
-		// }
-		//
-		// if (pressed) {
-		// 	toggle_pixel(&px, &py, 0);
-		// 	toggle_pixel(&x, &y, 1);
-		// 	px = x;
-		// 	py = y;
-		//
-		// 	display_update();
-		// 	pressed = 0;
-		// }
+		display_update();
 	}
 }
 
 int main() {
 	setup();
-
-	/*current testing routine*/
-	test();
+	game_setup();
+	game();
 
 	for(;;) ;
 	return 0;

@@ -20,9 +20,8 @@
 /*CONSTANTS*/
 #define DELAY 100000
 #define ENE_CNT 18
-#define BUL_LIM 3
 #define BAR_X 15
-#define BAR_W 8
+#define BAR_W 7
 #define BAR_H 2
 
 enum Direction {Forward, Right, Backwards, Left};
@@ -30,7 +29,6 @@ enum Direction {Forward, Right, Backwards, Left};
 struct entity {
 	uint8_t x;
 	uint8_t y;
-	int on;
 	uint8_t height;
 	uint8_t width;
 	int id;
@@ -42,15 +40,14 @@ struct bullet {
 	uint8_t y;
 	int dir;
 	int alive;
-	int id;
 };
 
 /*VARIABLES*/
 uint8_t pixels[512];
 struct entity entities[ENE_CNT+1];
-struct bullet bullets[ENE_CNT];
-struct bullet herbuls[BUL_LIM];
-int pxl[2*ENE_CNT + 1 + BUL_LIM];
+struct bullet bullets[ENE_CNT+1];
+int lives;
+int play;
 
 /*Declare base & setup functions*/
 void delay(int cyc);

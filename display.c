@@ -12,8 +12,8 @@ void toggle_pixel(uint8_t x, uint8_t y, int on) {
  *x1<x2, y1<y2*/
 void toggle_body(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int on) {
 	uint8_t i, j;
-	for (i=x1;i<x2+1;i++) {
-		for (j=y1;j<y2+1;j++){
+	for (i=x1;i<x2;i++) {
+		for (j=y1;j<y2;j++){
 			toggle_pixel(i, j, on);
 		}
 	}
