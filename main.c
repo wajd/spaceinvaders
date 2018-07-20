@@ -78,14 +78,15 @@ void game() {
 			play = 0;
 		}
 
-		if (!play) {
-			for (i=0;i<512;i++) {
-				pixels[i] = 0;
-			}
-		}
 		display_update();
 	}
 
+	if (!play) {
+		for (i=0;i<512;i++) {
+			pixels[i] = 0;
+		}
+	}
+	display_update();
 
 }
 
