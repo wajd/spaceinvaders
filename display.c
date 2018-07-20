@@ -8,9 +8,32 @@ void toggle_pixel(uint8_t x, uint8_t y, int on) {
 		pixels[(x % 128) + 128 * (((y - (y % 8))/8)%4)] &= ~(0x1 << (y % 8));
 }
 
+/*turn on a lot of pixels on/off
+ *x1<x2, y1<y2*/
+void toggle_body(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int on) {
+	uint8_t i, j;
+	for (i=x1;i<x2+1;i++) {
+		for (j=y1;j<y2+1;j++){
+			toggle_pixel(i, j, on);
+		}
+	}
+}
+
 /*ckeck specific pixel is on/off*/
 int is_pixel_on(uint8_t x, uint8_t y) {
 	return (pixels[(x % 128) + 128 * (((y - (y % 8))/8)%4)] & (0x1 << (y % 8)));
+}
+
+int is_body_on(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
+	uint8_t i, j;
+	for (i=x1;i<x2+1;i++) {
+		for (j=y1;j<y2+1;j++){
+			 if(is_pixel_on(i, j)) {
+				 return 1;
+			 }
+		}
+	}
+	return 0;
 }
 
 /*pixel array*/

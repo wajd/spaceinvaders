@@ -1,15 +1,29 @@
 #include "header.h"
 
 void test() {
-	int i;
+	int i, j;
 
-	spaceship = make_entity(10, 15, 2, 1, 0);
-	toggle_entity(&spaceship, 1);
+	entities[ENE_CNT] = make_entity(10, 3, 2, 1, ENE_CNT);
+	toggle_entity(&entities[ENE_CNT], 1);
 
-	for (i= 0; i< ENE_CNT; i++) {
-		enemies[i] = make_entity(100, (3 + i * 5), 1, 1, 1);
-		toggle_entity(&enemies[i], 1);
+	for (i= 0; i< ENE_CNT/3; i++) {
+		entities[i] = make_entity(100, (2 + i * 5), 1, 1, i);
+		toggle_entity(&entities[i], 1);
+		entities[i+6] = make_entity(110, (2 + i * 5), 1, 1, i+6);
+		toggle_entity(&entities[i+6], 1);
+		entities[i+12] = make_entity(120, (2 + i * 5), 1, 1, i+12);
+		toggle_entity(&entities[i+12], 1);
 	}
+
+	for (i=0; i<ENE_CNT;i++) {
+		bullets[i] = make_bullet(0,0,0,i);
+	}
+
+	for (i=0; i<BUL_LIM;i++) {
+		herbuls[i] = make_bullet(0,0,1,i);
+	}
+
+	build_barriers();
 
 	display_update();
 	int disp = 0;
@@ -28,46 +42,39 @@ void test() {
 	for(;;) {
 
 		if (getbtn(1)) {
-			move_entity(&spaceship, Forward);
-			disp = 1;
+			move_entity(&entities[ENE_CNT], Forward);
+
 		}
 		if (getbtn(2)) {
-			move_entity(&spaceship, Right);
-			disp = 1;
+			move_entity(&entities[ENE_CNT], Right);
+
 		}
 		if (getbtn(3)) {
-			move_entity(&spaceship, Left);
-			disp = 1;
+			move_entity(&entities[ENE_CNT], Left);
+
 		}
 		if (getbtn(4)) {
-			move_entity(&spaceship, Backwards);
-			disp = 1;
+			move_entity(&entities[ENE_CNT], Backwards);
+
 		}
 
-		if(ssbul.on) {
-			move_bullet(&ssbul);
-			bullet_kill(&ssbul);
-			disp = 1;
-		}
-
-		if(getsw(1) && !ssbul.on)
-			ssbul = shoot(&spaceship);
-
-
-		for (i=0; i<ENE_CNT; i++) {
-			if(enebuls[i].on) {
-				move_bullet(&enebuls[i]);
-				bullet_kill(&enebuls[i]);
-				disp = 1;
+		for (i=0; i<ENE_CNT;i++) {
+			if (getsw(1)) {
+				shoot(&entities[i]);
 			}
+			move_bullet(&bullets[i]);
+		}
 
-			if(getsw(2) && !enebuls[i].on)
-				enebuls[i] = shoot(&enemies[i]);
+		if (getsw(2+i)) {
+			shoot(&entities[ENE_CNT]);
+		}
+
+		for (i=0;i<BUL_LIM; i++) {
+			move_bullet(&herbuls[i]);
 		}
 
 		if (disp) {
 			display_update();
-			disp = 0;
 		}
 
 		// if (getbtn(1)) {

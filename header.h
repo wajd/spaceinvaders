@@ -19,8 +19,11 @@
 
 /*CONSTANTS*/
 #define DELAY 100000
-#define ENE_CNT 6
+#define ENE_CNT 18
 #define BUL_LIM 3
+#define BAR_X 15
+#define BAR_W 8
+#define BAR_H 2
 
 enum Direction {Forward, Right, Backwards, Left};
 
@@ -30,23 +33,24 @@ struct entity {
 	int on;
 	uint8_t height;
 	uint8_t width;
-  int enemy;
+	int id;
+	int alive;
 };
 
 struct bullet {
 	uint8_t x;
 	uint8_t y;
-	int on;
 	int dir;
-	int kill;
+	int alive;
+	int id;
 };
 
 /*VARIABLES*/
 uint8_t pixels[512];
-struct entity spaceship;
-struct bullet ssbul;
-struct entity enemies[ENE_CNT];
-struct bullet enebuls[ENE_CNT];
+struct entity entities[ENE_CNT+1];
+struct bullet bullets[ENE_CNT];
+struct bullet herbuls[BUL_LIM];
+int pxl[2*ENE_CNT + 1 + BUL_LIM];
 
 /*Declare base & setup functions*/
 void delay(int cyc);
@@ -58,14 +62,18 @@ void setup();
 /*Declare graphic functions*/
 void toggle_pixel(uint8_t x, uint8_t y, int on);
 int is_pixel_on(uint8_t x, uint8_t y);
+void toggle_body(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, int on);
+int is_body_on(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 /*Declare input functions*/
 int getbtn(int x);
 int getsw(int x);
 
 /*Declare game control functions*/
-struct entity make_entity (uint8_t x, uint8_t y, uint8_t height, uint8_t width, int enemy);
-void toggle_entity (struct entity *ent, int on);
+struct entity make_entity (uint8_t x, uint8_t y, uint8_t height, uint8_t width, int id);
+void toggle_entity (struct entity *ent, int show);
 void move_entity (struct entity *ent, int dir);
-struct bullet shoot(struct entity *ent);
+struct bullet make_bullet(uint8_t x, uint8_t y, int dir, int id);
 void move_bullet(struct bullet *bul);
+void shoot(struct entity *ent);
+void build_barriers();
