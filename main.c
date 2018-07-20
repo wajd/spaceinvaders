@@ -1,6 +1,6 @@
 #include "header.h"
 
-int i;
+int i, j;
 
 void game_setup() {
 
@@ -66,14 +66,27 @@ void game() {
 			play = 0;
 		}
 
+		j=0;
 		for(i=0;i<ENE_CNT;i++) {
 			if (entities[i].alive) {
 				toggle_entity(&entities[i], 1);
+				j++;
 			}
 		}
 
+		if (!j) {
+			play = 0;
+		}
+
+		if (!play) {
+			for (i=0;i<512;i++) {
+				pixels[i] = 0;
+			}
+		}
 		display_update();
 	}
+
+
 }
 
 int main() {
